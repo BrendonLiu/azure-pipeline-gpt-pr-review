@@ -2,7 +2,7 @@
     "manifestVersion": 1,
     "id": "CW-GPTPullRequestReview",
     "name": "CW GPT Pull Request Review",
-    "version": "0.12.3",
+    "version": "0.12.4",
     "publisher": "cw-group",
     "galleryFlags": [
         "Public",
