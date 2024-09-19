@@ -10,11 +10,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "azure-pipelines-task-lib": "^4.3.1",
-    "binary-extensions": "^2.2.0",
-    "node-fetch": "^2.6.6",
-    "openai": "^3.2.1",
-    "simple-git": "^3.17.0"
+    "azure-pipelines-task-lib": "^4.17.2",
+    "binary-extensions": "^2.3.0",
+    "node-fetch": "^2.7.0",
+    "openai": "^3.3.0",
+    "simple-git": "^3.26.0"
   },
   "devDependencies": {
     "@types/node": "^18.15.3",

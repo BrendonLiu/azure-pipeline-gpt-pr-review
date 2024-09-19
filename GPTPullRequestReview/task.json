@@ -1,10 +1,10 @@
 {
-  "id": "b42fa530-c4a6-11ed-87f6-d1f44a1fead1",
+  "id": "5a5dfc99-3ae0-42e6-a700-d4d3b24d8fc0",
   "name": "GPTPullRequestReview",
   "friendlyName": "Review PullRequest by GPT",
   "description": "This task use OpenAi GPT model to review PullRequests",
   "author": "Mustapha Larhrouch",
-  "helpMarkDown": "[More Information](https://github.com/mlarhrouch/azure-pipeline-gpt-pr-review)",
+  "helpMarkDown": "[More Information](https://github.com/BrendonLiu/azure-pipeline-gpt-pr-review)",
   "category": "Utility",
   "visibility": [
     "Build"
@@ -34,6 +34,7 @@
       "options": {
         "": "",
         "gpt-4": "GPT 4",
+        "gpt-4o-mini": "GPT 4o mini",
         "gpt-3.5-turbo": "GPT 3.5 Turbo",
         "gpt-3.5-turbo-16k": "GPT 3.5 Turbo 16k"
       },
