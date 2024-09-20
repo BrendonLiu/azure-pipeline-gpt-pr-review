@@ -40,6 +40,9 @@
             "path": "overview.md"
         }
     },
+    "engines": {
+        "node": ">=16.0.0"
+    },
     "contributions": [
         {
             "id": "GPTPullRequestReview",
