@@ -72,8 +72,11 @@ export async function reviewFile(targetBranch: string, fileName: string, httpsAg
       const review = choices[0].message?.content as string;
 
       if (review.trim() !== "No feedback.") {
+        console.log(`fileName is ${fileName}.`);
         const lineNumber = getLineNumberFromPatch(patch); // 自動取得行號
+        console.log(`lineNumber is ${lineNumber}.`);
         const suggestion = extractSuggestionFromReview(review); // 提取建議的程式碼
+        console.log(`suggestion is ${suggestion}.`);
 
         await addCommentToPR(fileName, lineNumber, review, suggestion, httpsAgent);
       }
