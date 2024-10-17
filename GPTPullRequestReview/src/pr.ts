@@ -2,22 +2,28 @@ import * as tl from "azure-pipelines-task-lib/task";
 import { Agent } from 'https';
 import fetch from 'node-fetch';
 
-export async function addCommentToPR(fileName: string, comment: string, httpsAgent: Agent) {
+export async function addCommentToPR(fileName: string, lineNumber: number, comment: string, suggestion: string, httpsAgent: Agent) {
   const body = {
     comments: [
       {
         parentCommentId: 0,
-        content: comment,
+        content: `${comment}\n\n\`\`\`suggestion\n${suggestion}\n\`\`\``,
         commentType: 1
       }
     ],
     status: 1,
     threadContext: {
       filePath: fileName,
+      rightFileStart: {
+        line: lineNumber
+      },
+      rightFileEnd: {
+        line: lineNumber
+      }
     }
-  }
+  };
 
-  const prUrl = `${tl.getVariable('SYSTEM.TEAMFOUNDATIONCOLLECTIONURI')}${tl.getVariable('SYSTEM.TEAMPROJECTID')}/_apis/git/repositories/${tl.getVariable('Build.Repository.Name')}/pullRequests/${tl.getVariable('System.PullRequest.PullRequestId')}/threads?api-version=5.1`
+  const prUrl = `${tl.getVariable('SYSTEM.TEAMFOUNDATIONCOLLECTIONURI')}${tl.getVariable('SYSTEM.TEAMPROJECTID')}/_apis/git/repositories/${tl.getVariable('Build.Repository.Name')}/pullRequests/${tl.getVariable('System.PullRequest.PullRequestId')}/threads?api-version=5.1`;
 
   await fetch(prUrl, {
     method: 'POST',
@@ -26,9 +32,8 @@ export async function addCommentToPR(fileName: string, comment: string, httpsAge
     agent: httpsAgent
   });
 
-  console.log(`New comment added.`);
+  console.log(`New comment with suggestion added.`);
 }
-
 export async function deleteExistingComments(httpsAgent: Agent) {
   console.log("Start deleting existing comments added by the previous Job ...");
 

@@ -11,7 +11,23 @@ export async function reviewFile(targetBranch: string, fileName: string, httpsAg
   const defaultOpenAIModel = 'gpt-4o-mini';
   const patch = await git.diff([targetBranch, '--', fileName]);
 
-  const instructions = tl.getInput('ai_instructions')
+  const instructions = tl.getInput('ai_instructions');
+
+  function getLineNumberFromPatch(patch: string): number {
+    const match = patch.match(/\+(\d+),?\d* @@/);
+    if (match) {
+      return parseInt(match[1], 10);
+    }
+    return 1; // 預設行號
+  }
+
+  function extractSuggestionFromReview(review: string): string {
+    const match = review.match(/`([^`]+)`/);
+    if (match) {
+      return match[1];
+    }
+    return "console.log('Suggested change');";
+  }
 
   try {
     let choices: any;
@@ -32,7 +48,7 @@ export async function reviewFile(targetBranch: string, fileName: string, httpsAg
         max_tokens: 500
       });
 
-      choices = response.data.choices
+      choices = response.data.choices;
     }
     else if (aoiEndpoint) {
       const request = await fetch(aoiEndpoint, {
@@ -42,7 +58,7 @@ export async function reviewFile(targetBranch: string, fileName: string, httpsAg
           max_tokens: 500,
           messages: [{
             role: "user",
-            content: `${instructions}\n, patch : ${patch}}`
+            content: `${instructions}\n, patch : ${patch}`
           }]
         })
       });
@@ -56,7 +72,10 @@ export async function reviewFile(targetBranch: string, fileName: string, httpsAg
       const review = choices[0].message?.content as string;
 
       if (review.trim() !== "No feedback.") {
-        await addCommentToPR(fileName, review, httpsAgent);
+        const lineNumber = getLineNumberFromPatch(patch); // 自動取得行號
+        const suggestion = extractSuggestionFromReview(review); // 提取建議的程式碼
+
+        await addCommentToPR(fileName, lineNumber, review, suggestion, httpsAgent);
       }
     }
 
