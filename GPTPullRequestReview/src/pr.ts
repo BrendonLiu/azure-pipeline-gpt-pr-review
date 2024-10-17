@@ -15,10 +15,12 @@ export async function addCommentToPR(fileName: string, lineNumber: number, comme
     threadContext: {
       filePath: fileName,
       rightFileStart: {
-        line: lineNumber
+        line: lineNumber,
+        offset: 1
       },
       rightFileEnd: {
-        line: lineNumber
+        line: lineNumber,
+        offset: 1
       }
     }
   };
