@@ -11,8 +11,9 @@ export async function addCommentToPR(fileName: string, lineNumber: number, comme
   const pullRequestId = tl.getVariable('System.PullRequest.PullRequestId'); // 從環境變數取得 PR 編號
   const branchName = tl.getVariable('Build.SourceBranchName'); // 從環境變數取得分支名稱
 
-  const fileUrl = `https://dev.azure.com/${organization}/${project}/_git/${repository}/pullRequest/${pullRequestId}?path=${encodeURIComponent(fileName)}&version=GB${branchName}&line=${lineNumber}`;
-  
+  const fileUrl = `https://dev.azure.com/${organization}/${project}/_git/${repository}/pullRequest/${pullRequestId}?path=/${fileName}&version=GB${branchName}&line=${lineNumber}&lineStartColumn=1&lineEndColumn=1&_a=files`;
+  console.log(`fileUrl is ${fileUrl}`);
+
   const body = {
     comments: [
       {

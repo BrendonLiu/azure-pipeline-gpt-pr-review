@@ -70,7 +70,7 @@ export async function reviewFile(targetBranch: string, fileName: string, httpsAg
 
     if (choices && choices.length > 0) {
       const review = choices[0].message?.content as string;
-
+      console.log(`review is ${review}.`);
       if (review.trim() !== "No feedback.") {
         console.log(`fileName is ${fileName}.`);
         const lineNumber = getLineNumberFromPatch(patch); // 自動取得行號
