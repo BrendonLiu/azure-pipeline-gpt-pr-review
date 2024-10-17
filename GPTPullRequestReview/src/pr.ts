@@ -25,12 +25,22 @@ export async function addCommentToPR(fileName: string, lineNumber: number, comme
 
   const prUrl = `${tl.getVariable('SYSTEM.TEAMFOUNDATIONCOLLECTIONURI')}${tl.getVariable('SYSTEM.TEAMPROJECTID')}/_apis/git/repositories/${tl.getVariable('Build.Repository.Name')}/pullRequests/${tl.getVariable('System.PullRequest.PullRequestId')}/threads?api-version=5.1`;
 
-  await fetch(prUrl, {
+  console.log(`prUrl is ${prUrl} .`);
+
+  const response = await fetch(prUrl, {
     method: 'POST',
     headers: { 'Authorization': `Bearer ${tl.getVariable('SYSTEM.ACCESSTOKEN')}`, 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
     agent: httpsAgent
   });
+
+  // 檢查回應狀態碼
+  if (response.ok) { // 狀態碼在 200-299 之間表示成功
+    const responseData = await response.json();
+    console.log("Comment added successfully:", responseData);
+  } else {
+    console.error(`Failed to add comment. Status: ${response.status}, Message: ${await response.text()}`);
+  }
 
   console.log(`New comment with suggestion added.`);
 }
