@@ -3,11 +3,21 @@ import { Agent } from 'https';
 import fetch from 'node-fetch';
 
 export async function addCommentToPR(fileName: string, lineNumber: number, comment: string, suggestion: string, httpsAgent: Agent) {
+
+  const organizationUrl = tl.getVariable('SYSTEM.TEAMFOUNDATIONCOLLECTIONURI') as string; // 例如: https://dev.azure.com/your-organization/
+  const organization = organizationUrl.split('/')[3];
+  const project = tl.getVariable('SYSTEM.TEAMPROJECT') as string; // 取得專案名稱
+  const repository = tl.getVariable('Build.Repository.Name'); // 從環境變數取得儲存庫名稱
+  const pullRequestId = tl.getVariable('System.PullRequest.PullRequestId'); // 從環境變數取得 PR 編號
+  const branchName = tl.getVariable('Build.SourceBranchName'); // 從環境變數取得分支名稱
+
+  const fileUrl = `https://dev.azure.com/${organization}/${project}/_git/${repository}/pullRequest/${pullRequestId}?path=${encodeURIComponent(fileName)}&version=GB${branchName}&line=${lineNumber}`;
+  
   const body = {
     comments: [
       {
         parentCommentId: 0,
-        content: `${comment}\n\n\`\`\`suggestion\n${suggestion}\n\`\`\``,
+        content: `${comment}\n\n[View code line](${fileUrl})\n\n\`\`\`suggestion\n${suggestion}\n\`\`\``,
         commentType: 1
       }
     ],
