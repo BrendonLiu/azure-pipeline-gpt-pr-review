@@ -68,17 +68,32 @@ export async function reviewFile(targetBranch: string, fileName: string, httpsAg
       choices = response.choices;
     }
 
+    // 檢查回應並解析 JSON 格式的建議
     if (choices && choices.length > 0) {
-      const review = choices[0].message?.content as string;
-      console.log(`review is ${review}.`);
-      if (review.trim() !== "No feedback.") {
-        console.log(`fileName is ${fileName}.`);
-        const lineNumber = getLineNumberFromPatch(patch); // 自動取得行號
-        console.log(`lineNumber is ${lineNumber}.`);
-        const suggestion = extractSuggestionFromReview(review); // 提取建議的程式碼
-        console.log(`suggestion is ${suggestion}.`);
+      const message = choices[0].message;
+      console.log("Raw message from GPT:", message); // 打印原始的 message 內容以便檢查格式
 
-        await addCommentToPR(fileName, lineNumber, review, suggestion, httpsAgent);
+      const review = message?.content as string;
+      console.log("Raw review from GPT:", review);
+        
+      try {
+        const suggestions = JSON.parse(review); // 將回應直接解析為 JSON 陣列
+    
+        // 確認 JSON 格式為陣列，並逐條處理建議
+        if (Array.isArray(suggestions)) {
+          for (const suggestion of suggestions) {
+            const lineNumber = suggestion.line;
+            const content = suggestion.content;
+    
+            // 新增評論
+            await addCommentToPR(fileName, lineNumber, content, httpsAgent);
+          }
+        } else {
+          console.log("Unexpected format: Expected an array of suggestions.");
+        }
+      } catch (error) {
+        console.error("Failed to parse JSON response:", error);
+        console.log("Non-JSON response content:", review); // 如果解析失敗，打印回應內容以便進一步調試
       }
     }
 

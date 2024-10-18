@@ -2,7 +2,7 @@ import * as tl from "azure-pipelines-task-lib/task";
 import { Agent } from 'https';
 import fetch from 'node-fetch';
 
-export async function addCommentToPR(fileName: string, lineNumber: number, comment: string, suggestion: string, httpsAgent: Agent) {
+export async function addCommentToPR(fileName: string, lineNumber: number, comment: string, httpsAgent: Agent) {
 
   const organizationUrl = tl.getVariable('SYSTEM.TEAMFOUNDATIONCOLLECTIONURI') as string; // 例如: https://dev.azure.com/your-organization/
   const organization = organizationUrl.split('/')[3];
@@ -18,7 +18,7 @@ export async function addCommentToPR(fileName: string, lineNumber: number, comme
     comments: [
       {
         parentCommentId: 0,
-        content: `${comment}\n\n[View code line](${fileUrl})\n\n\`\`\`suggestion\n${suggestion}\n\`\`\``,
+        content: `${comment}\n\n[View code line](${fileUrl})\n\n`,
         commentType: 1
       }
     ],
